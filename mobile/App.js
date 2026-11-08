@@ -3,7 +3,7 @@ import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import { File } from 'expo-file-system';
-const Backend_Url = 'http://10.250.53.129:8000';
+const Backend_Url = 'http://10.63.5.129:8000';
 
 
 export default function App() {
@@ -38,7 +38,7 @@ export default function App() {
         return;
       }
 
-      setMessage('Photo accepted: ' + data.width + ' x ' + data.height);
+      setMessage('Skin health score: ' + data.skin_health_score + '/100\n\n' + data.summary);
     }
     catch (error) {
       setMessage('could not reach the backend. is it running?' + error.message);
