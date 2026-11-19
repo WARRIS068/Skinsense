@@ -23,7 +23,7 @@ This is for general information only. It is not a medical diagnosis.
 Rate each of these four concerns: acne, hyperpigmentation, dark circles and skin texture.
 For each one, choose exactly one severity: none, mild, moderate or severe.
 
-Give a skin_health_score from 0 to 100, where 100 means no visible concerns.
+Give a skin health score from 0 to 100, where 100 means no visible concerns.
 
 Write a short summary of 2 to 3 sentences for the user. Use the words "signs consistent with".
 Never name a disease, never diagnose, and never recommend products or medicines.
@@ -46,6 +46,35 @@ RESULT_SCHEMA = {
     "additionalProperties": False,
 }
 
+CONCERN_NAMES = {
+    "acne": "Acne",
+    "hyperpigmentation": "Hyperpigmentation",
+    "dark_circles": "Dark circles",
+    "texture": "Skin texture",
+}
+
+INGREDIENTS = {
+    "acne": ["Salicylic acid", "Benzoyl peroxide (low strength)", "Niacinamide"],
+    "hyperpigmentation": ["Vitamin C", "Azelaic acid", "Niacinamide", "Sunscreen (SPF 30 or higher)"],
+    "dark_circles": ["Caffeine", "Vitamin C", "Hyaluronic acid"],
+    "texture": ["Lactic acid or glycolic acid (gentle exfoliants)", "Retinol", "Hyaluronic acid"],
+}
+
+
+def get_ingredients(result):
+    suggestions = []
+
+    if result["needs_dermatologist"]:
+        return suggestions
+
+    for concern in ["acne", "hyperpigmentation", "dark_circles", "texture"]:
+        if result[concern] == "mild" or result[concern] == "moderate":
+            suggestions.append({
+                "concern": CONCERN_NAMES[concern],
+                "ingredients": INGREDIENTS[concern],
+            })
+
+    return suggestions
 
 @app.get("/health")
 def health():
@@ -124,6 +153,7 @@ def analyse(photo: UploadFile):
 
     severities = [result["acne"], result["hyperpigmentation"], result["dark_circles"], result["texture"]]
     result["needs_dermatologist"] = "severe" in severities
+    result["ingredients"] = get_ingredients(result)
 
     result["model"] = MODEL
     result["prompt_version"] = PROMPT_VERSION
