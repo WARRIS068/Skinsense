@@ -81,8 +81,16 @@ def ask_ai(image_data):
     for block in response.content:
         if block.type == "text":
             reply_text = block.text
-    result = json.loads(reply_text)
-
+    
+    try:
+        result = json.loads(reply_text)
+    except json.JSONDecodeError:
+        raise HTTPException(502, "The AI gave a reply that could not be read. Please try again.")
+    
+    for key in RESULT_SCHEMA["required"]:
+        if key not in result:
+            raise HTTPException(502, "The AI reply was missing some information. Please try again.")
+    
     if not result["face_found"]:
         raise HTTPException(400, "No clear face found. Use a photo of one face looking at the camera.")
 
