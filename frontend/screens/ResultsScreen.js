@@ -52,7 +52,7 @@ export default function ResultsScreen({ result, setScreen }) {
         </Text>
       ) : null}
 
-      {result.ingredients.length > 0 ? (
+      {result.ingredients && result.ingredients.length > 0 ? (
         <View style={styles.card}>
           <Text style={styles.heading}>Ingredients that may help</Text>
           {result.ingredients.map((item) => (
