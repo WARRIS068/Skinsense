@@ -1,8 +1,10 @@
 from fastapi import APIRouter, UploadFile
 
-from models.photo_model import check_photo, prepare_photo
-from models.ai_model import ask_ai, MODEL, PROMPT_VERSION
-from models.advice_model import needs_dermatologist, get_ingredients
+from services.photo_service import check_photo, prepare_photo
+from services.ai_service import ask_ai, MODEL, PROMPT_VERSION
+from services.advice_service import needs_dermatologist, get_ingredients
+from entities.analysis import Analysis
+from repositories import analysis_repo
 
 router = APIRouter()
 
@@ -24,4 +26,11 @@ def analyse(photo: UploadFile):
 
     result["model"] = MODEL
     result["prompt_version"] = PROMPT_VERSION
+    analysis = analysis_repo.save(Analysis(result))
+    result["id"] = analysis.id
     return result
+
+
+@router.get("/analyses")
+def get_analyses():
+    return analysis_repo.find_all()
