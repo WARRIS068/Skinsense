@@ -21,6 +21,9 @@ def check_photo(photo):
         raise HTTPException(400, "Please upload a JPEG, PNG or WebP photo.")
 
     width, height = image.size
+    if width * height > 50000000:
+        raise HTTPException(400, "Photo has too many pixels. Use a normal phone photo.")
+    
     if width < 512 or height < 512:
         raise HTTPException(400, "Photo is too small. Use a bigger photo.")
 
