@@ -216,4 +216,13 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
   },
+  historyScore: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  headerLinks: {
+    flexDirection: 'row',
+    gap: 16,
+  },
 });

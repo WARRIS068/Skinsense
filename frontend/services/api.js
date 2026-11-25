@@ -15,3 +15,10 @@ export async function analysePhoto(photoUri) {
 
   return { ok: response.ok, data: data };
 }
+
+export async function getHistory() {
+  const response = await fetch(Backend_Url + '/analyses');
+  const data = await response.json();
+
+  return { ok: response.ok, data: data };
+}

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { analysePhoto } from './services/api';
+import { analysePhoto, getHistory } from './services/api';
 import WelcomeScreen from './screens/WelcomeScreen';
 import HomeScreen from './screens/HomeScreen';
 import ResultsScreen from './screens/ResultsScreen';
 import AboutScreen from './screens/AboutScreen';
+import HistoryScreen from './screens/HistoryScreen';
 
 export default function App() {
   const [screen, setScreen] = useState('welcome');
@@ -13,6 +14,7 @@ export default function App() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
+  const [history, setHistory] = useState([]);
 
   async function pickphoto() {
     const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], });
@@ -47,6 +49,25 @@ export default function App() {
     setLoading(false);
   }
 
+  async function openHistory() {
+    setMessage('');
+
+    try {
+      const answer = await getHistory();
+
+      if (!answer.ok) {
+        setMessage('Could not load history. Please try again.');
+      }
+      else {
+        setHistory(answer.data);
+        setScreen('history');
+      }
+    }
+    catch (error) {
+      setMessage('could not reach the backend. is it running? ' + error.message);
+    }
+  }
+
   if (screen === 'welcome') {
     return <WelcomeScreen agreed={agreed} setAgreed={setAgreed} setScreen={setScreen} />;
   }
@@ -60,12 +81,17 @@ export default function App() {
         pickphoto={pickphoto}
         sendPhoto={sendPhoto}
         setScreen={setScreen}
+        openHistory={openHistory}
       />
     );
   }
 
   if (screen === 'results') {
     return <ResultsScreen result={result} setScreen={setScreen} />;
+  }
+
+  if (screen === 'history') {
+    return <HistoryScreen history={history} setScreen={setScreen} />;
   }
 
   return <AboutScreen setScreen={setScreen} />;

@@ -2,14 +2,19 @@ import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { COLORS, styles } from '../styles/theme';
 
-export default function HomeScreen({ photoUri, loading, message, pickphoto, sendPhoto, setScreen }) {
+export default function HomeScreen({ photoUri, loading, message, pickphoto, sendPhoto, setScreen, openHistory }) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>SkinSense</Text>
-        <Pressable onPress={() => setScreen('about')}>
-          <Text style={styles.link}>About</Text>
-        </Pressable>
+        <View style={styles.headerLinks}>
+          <Pressable onPress={openHistory}>
+            <Text style={styles.link}>History</Text>
+          </Pressable>
+          <Pressable onPress={() => setScreen('about')}>
+            <Text style={styles.link}>About</Text>
+          </Pressable>
+        </View>
       </View>
 
       <View style={styles.card}>
