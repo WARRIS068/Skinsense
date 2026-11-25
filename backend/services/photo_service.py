@@ -6,6 +6,9 @@ from PIL import Image, ImageOps
 
 
 def check_photo(photo):
+    if photo.size is None:
+        raise HTTPException(400, "Could not read the photo size. Please try another photo.")
+    
     if photo.size > 10 * 1024 * 1024:
         raise HTTPException(400, "Photo is too big. Use a photo under 10 MB.")
 
