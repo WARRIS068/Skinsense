@@ -1,10 +1,11 @@
-from fastapi import APIRouter, UploadFile
+from fastapi import APIRouter, Request, UploadFile
 
 from services.photo_service import check_photo, prepare_photo
 from services.ai_service import ask_ai, MODEL, PROMPT_VERSION
 from services.advice_service import needs_dermatologist, get_ingredients
 from entities.analysis import Analysis
 from repositories import analysis_repo
+from services.rate_limit_service import check_rate_limit
 
 router = APIRouter()
 
@@ -15,7 +16,8 @@ def health():
 
 
 @router.post("/analyse")
-def analyse(photo: UploadFile):
+def analyse(photo: UploadFile, request: Request):
+    check_rate_limit(request.client.host)
     image = check_photo(photo)
     image_data = prepare_photo(image)
 
